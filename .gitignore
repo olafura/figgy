@@ -38,3 +38,8 @@ nosetests.xml
 /.idea/
 
 /figgy.db.sqlite3
+
+# Vim
+*~
+*.swp
+*.swo
