@@ -79,3 +79,57 @@ class TestTools(TestCase):
         self.assertEqual(Alias.objects.get(scheme='ISBN-13').value,
                          '0000000000123')
 
+    def test_storage_tools_test_conflicting_alias(self):
+        '''process_book_element should work with an alias that belongs
+           to an other book.
+        '''
+
+        xml_str = '''
+        <book id="12345">
+            <title>A title</title>
+            <aliases>
+                <alias scheme="ISBN-10" value="0158757819"/>
+                <alias scheme="ISBN-13" value="0000000000123"/>
+            </aliases>
+        </book>
+        '''
+
+        xml_str_2 = '''
+        <book id="67890">
+             <title>Second title</title>
+             <aliases>
+                <alias scheme="ISBN-10" value="2158757819"/>
+                <alias scheme="ISBN-13" value="0000000000456"/>
+             </aliases>
+        </book>
+        '''
+
+        xml_str_3 = '''
+        <book id="12345">
+             <title>Third title</title>
+             <aliases>
+                <alias scheme="ISBN-10" value="0158757819"/>
+                <alias scheme="ISBN-13" value="0000000000456"/>
+             </aliases>
+        </book>
+        '''
+
+        xml = etree.fromstring(xml_str)
+        storage.tools.process_book_element(xml)
+
+        xml2 = etree.fromstring(xml_str_2)
+        storage.tools.process_book_element(xml2)
+
+        xml3 = etree.fromstring(xml_str_3)
+        storage.tools.process_book_element(xml3)
+
+        self.assertEqual(Book.objects.count(), 2)
+        book = Book.objects.get(pk='12345')
+
+        self.assertEqual(book.title, 'Third title')
+        self.assertEqual(book.aliases.count(), 2)
+        self.assertEqual(book.aliases.filter(scheme='ISBN-10')[0].value,
+                         '0158757819')
+        self.assertEqual(book.aliases.filter(scheme='ISBN-13')[0].value,
+                         '0000000000123')
+
