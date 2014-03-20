@@ -41,7 +41,7 @@ class TestTools(TestCase):
                          '0000000000123')
 
     def test_storage_tools_aliased_id(self):
-        '''process_book_element should put the book in the database.'''
+        '''process_book_element should work with an aliased id.'''
 
         xml_str = '''
         <book id="12345">
