@@ -1,3 +1,4 @@
+'''Settings for the tox testing'''
 from figgy.settings import *
 
 DEBUG = False
@@ -58,11 +59,12 @@ NOSE_ARGS = [
 
 TESTING = True
 
-# Developers should always have a _local_tests.py file.  Copy it from _local_tests.py.example and customize.
-# If you need to locally override things (like NOSE_ARGS), add them to _local_tests.py
+# Developers should always have a _local_tests.py file.
+# Copy it from _local_tests.py.example and customize.
+# If you need to locally override things (like NOSE_ARGS),
+# add them to _local_tests.py
 try:
     from figgy._local_tests import *
-except ImportError, e:
+except ImportError as inst:
     print u"FYI: You have no figgy/_local_tests.py, but you should!"
-    pass
 

@@ -87,6 +87,7 @@ STATIC_URL = '/static/'
 
 
 try:
-    from local import *
-except ImportError, e:
+    from figgly.local import *
+except ImportError as inst:
     pass
+

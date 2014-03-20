@@ -1,6 +1,7 @@
 # encoding: utf-8
 # Created by David Rideout <drideout@safaribooksonline.com> on 2/7/14 5:01 PM
 # Copyright (c) 2013 Safari Books Online, LLC. All rights reserved.
+'''Test for Tools'''
 
 from django.test import TestCase
 from lxml import etree
@@ -9,6 +10,7 @@ import storage.tools
 
 
 class TestTools(TestCase):
+    '''Tests for the Tools module'''
     def setUp(self):
         pass
 
@@ -33,6 +35,8 @@ class TestTools(TestCase):
 
         self.assertEqual(book.title, 'A title')
         self.assertEqual(book.aliases.count(), 2)
-        self.assertEqual(Alias.objects.get(scheme='ISBN-10').value, '0158757819')
-        self.assertEqual(Alias.objects.get(scheme='ISBN-13').value, '0000000000123')
+        self.assertEqual(Alias.objects.get(scheme='ISBN-10').value,
+                         '0158757819')
+        self.assertEqual(Alias.objects.get(scheme='ISBN-13').value,
+                         '0000000000123')
 
