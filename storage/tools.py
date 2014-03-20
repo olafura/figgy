@@ -4,6 +4,7 @@
 '''A tool module for Books to proccess the book elements'''
 
 from storage.models import Book
+from django.db.utils import IntegrityError
 
 
 def process_book_element(book_element):
@@ -22,7 +23,10 @@ def process_book_element(book_element):
         scheme = alias.get('scheme')
         value = alias.get('value')
 
-        book.aliases.get_or_create(scheme=scheme, value=value)
+        try:
+            book.aliases.get_or_create(scheme=scheme, value=value)
+        except IntegrityError as e:
+            pass
 
     book.save()
 
