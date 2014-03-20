@@ -14,6 +14,25 @@ class BaseModel(models.Model):
         '''Meta class for Base class'''
         abstract = True
 
+class BookQuerySet(models.query.QuerySet):
+    '''Modified Book QuerySet'''
+
+    def get(self, *args, **kwargs):
+        '''Modified get to support fetching either the id or an alias'''
+        clone = super(BookQuerySet, self).filter(id=kwargs['pk']) | super(BookQuerySet, self).filter(aliases__value=kwargs['pk'])
+        clone = clone.distinct()
+        num = len(clone)
+        if num == 1:
+            return clone._result_cache[0]
+        else:
+            return super(BookQuerySet, self).get(*args, **kwargs)
+
+class BookManager(models.Manager):
+    '''Modified Book Manager to pass a modifed QuerySet'''
+
+    def get_query_set(self):
+        '''Deliver a modifed QuerySet'''
+        return BookQuerySet(self.model)
 
 class Book(BaseModel):
     '''
@@ -29,6 +48,7 @@ class Book(BaseModel):
     description = models.TextField(blank=True, null=True, default=None,
                                    help_text="Very short description of \
                                               this book.")
+    objects = BookManager()
 
     def __unicode__(self):
         return u"Book %s" % self.title
