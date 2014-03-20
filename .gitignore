@@ -40,6 +40,7 @@ nosetests.xml
 /figgy.db.sqlite3
 
 figgy/local.py
+figgy/_local_tests.py
 
 # Vim
 *~
