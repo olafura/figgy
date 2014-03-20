@@ -40,3 +40,42 @@ class TestTools(TestCase):
         self.assertEqual(Alias.objects.get(scheme='ISBN-13').value,
                          '0000000000123')
 
+    def test_storage_tools_aliased_id(self):
+        '''process_book_element should put the book in the database.'''
+
+        xml_str = '''
+        <book id="12345">
+            <title>A title</title>
+            <aliases>
+                <alias scheme="ISBN-10" value="0158757819"/>
+                <alias scheme="ISBN-13" value="0000000000123"/>
+            </aliases>
+        </book>
+        '''
+
+        xml_str_2 = '''
+        <book id="0158757819">
+             <title>Second title</title>
+             <aliases>
+                <alias scheme="ISBN-10" value="0158757819"/>
+                <alias scheme="ISBN-13" value="0000000000123"/>
+             </aliases>
+        </book>
+        '''
+
+        xml = etree.fromstring(xml_str)
+        storage.tools.process_book_element(xml)
+
+        xml2 = etree.fromstring(xml_str_2)
+        storage.tools.process_book_element(xml2)
+
+        self.assertEqual(Book.objects.count(), 1)
+        book = Book.objects.get(pk='12345')
+
+        self.assertEqual(book.title, 'Second title')
+        self.assertEqual(book.aliases.count(), 2)
+        self.assertEqual(Alias.objects.get(scheme='ISBN-10').value,
+                         '0158757819')
+        self.assertEqual(Alias.objects.get(scheme='ISBN-13').value,
+                         '0000000000123')
+
