@@ -39,6 +39,8 @@ nosetests.xml
 
 /figgy.db.sqlite3
 
+figgy/local.py
+
 # Vim
 *~
 *.swp
